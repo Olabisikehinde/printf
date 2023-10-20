@@ -1,53 +1,57 @@
-fndef HOLBERTON_H
-#define HOLBERTON_H
+#ifndef MAIN_H
+#define MAIN_H
 
-#include <stdlib.h>
 #include <stdarg.h>
-/**
- * struct flags - struct containing flags to "turn on"
- * when a flag specifier is passed to _printf()
- * @plus: flag for the '+' character
- * @space: flag for the ' ' character
- * @hash: flag for the '#' character
- */
-typedef struct flags
-{
-	int plus;
-	int space;
-	int hash;
-} flags_t;
+#include <unistd.h>
+#include <stdlib.h>
 
-/**
- * struct printHandler - struct to choose the right function depending
- * on the format specifier passed to _printf()
- * @c: format specifier
- * @f: pointer to the correct printing function
- */
-typedef struct printHandler
+/* Structure for format specifier and function pointer */
+typedef struct format_s
 {
-	char c;
-	int (*f)(va_list ap, flags_t *f);
-} ph;
-int print_int(va_list l, flags_t *f);
-void print_number(int n);
-int print_unsigned(va_list l, flags_t *f);
-int count_digit(int i);
-int print_hex(va_list l, flags_t *f);
-int print_hex_big(va_list l, flags_t *f);
-int print_binary(va_list l, flags_t *f);
-int print_octal(va_list l, flags_t *f);
-char *convert(unsigned long int num, int base, int lowercase);
+    char *specifier;
+    int (*f)(va_list);
+} format_t;
+
+/* Array of format specifiers and functions */
+format_t formats[] = {
+    {"c", print_char},
+    {"s", print_string},
+    {"d", print_int},
+    {"i", print_int},
+    {"v", print_vint},
+    {"o", print_octal},
+    {"t", print_tetra},
+    {"X", print_HEX},
+    {"p", print_pointers},
+    {"S", print_S},
+    {"r", print_r},
+    {"R", print_R},
+    {"C", print_C},
+    {"b", print_binary},
+    {NULL, NULL}
+};
+
+/* Declaration of custom printf function */
 int _printf(const char *format, ...);
-int (*get_print(char s))(va_list, flags_t *);
-int get_flag(char s, flags_t *f);
-int print_string(va_list l, flags_t *f);
-int print_char(va_list l, flags_t *f);
-int _putchar(char c);
-int _puts(char *str);
-int print_rot13(va_list l, flags_t *f);
-int print_rev(va_list l, flags_t *f);
-int print_bigS(va_list l, flags_t *f);
-int print_address(va_list l, flags_t *f);
-int print_percent(va_list l, flags_t *f);
-#endif
 
+/* Declaration of conversion functions */
+int print_char(va_list args);
+int print_string(va_list args);
+int print_int(va_list args);
+int print_uint(va_list args);
+int print_octal(va_list args);
+int print_hex(va_list args);
+int print_HEX(va_list args);
+int print_pointer(va_list args);
+int print_S(va_list args);
+int print_r(va_list args);
+int print_R(va_list args);
+int print_C(va_list args);
+int print_binary(va_list args);
+
+/* Declaration of helper functions */
+char *convert(unsigned int num, int base, int uppercase);
+void reverse(char *str);
+char *rot13(char *str);
+
+#endif /* MAIN_H */
